@@ -12,7 +12,11 @@ export const Route = createFileRoute("/collections/$handle")({
     const c = loaderData ? collections[loaderData.handle] : null;
     const title = c ? `${c.title} — HMLND` : "Collection — HMLND";
     const desc = c?.intro ?? "HMLND collection";
-    return { meta: [{ title }, { name: "description", content: desc }, { property: "og:title", content: title }, { property: "og:description", content: desc }] };
+    const path = `/collections/${loaderData?.handle ?? ""}`;
+    return {
+      meta: [{ title }, { name: "description", content: desc }, { property: "og:title", content: title }, { property: "og:description", content: desc }, { property: "og:type", content: "website" }, { property: "og:url", content: path }],
+      links: [{ rel: "canonical", href: path }],
+    };
   },
   component: CollectionPage,
   notFoundComponent: () => <p className="px-10 py-32 text-center">Collection not found.</p>,

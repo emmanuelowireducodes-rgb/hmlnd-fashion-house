@@ -4,7 +4,7 @@ import { lineKey } from "@/lib/cart-math";
 import { formatGHS, getProduct } from "@/lib/catalog";
 
 export const Route = createFileRoute("/cart")({
-  head: () => ({ meta: [{ title: "Bag — HMLND" }, { name: "description", content: "Your HMLND shopping bag." }, { property: "og:title", content: "Bag — HMLND" }, { property: "og:description", content: "Your HMLND shopping bag." }] }),
+  head: () => ({ meta: [{ title: "Bag — HMLND" }, { name: "description", content: "Your HMLND shopping bag." }, { property: "og:title", content: "Bag — HMLND" }, { property: "og:description", content: "Your HMLND shopping bag." }, { name: "robots", content: "noindex" }] }),
   component: CartPage,
 });
 

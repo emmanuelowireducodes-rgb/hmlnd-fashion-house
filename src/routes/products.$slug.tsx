@@ -10,12 +10,30 @@ export const Route = createFileRoute("/products/$slug")({
   loader: ({ params }) => {
     const p = getProduct(params.slug);
     if (!p) throw notFound();
-    return { slug: p.slug, name: p.name, description: p.description };
+    return { slug: p.slug, name: p.name, description: p.description, price: p.price };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const t = loaderData ? `${loaderData.name} — HMLND` : "Product — HMLND";
     const d = loaderData?.description ?? "HMLND product";
-    return { meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }, { property: "og:type", content: "product" }] };
+    return {
+      meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }, { property: "og:type", content: "product" }, { property: "og:url", content: `/products/${params.slug}` }],
+      links: [{ rel: "canonical", href: `/products/${params.slug}` }],
+      ...(loaderData
+        ? {
+            scripts: [{
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Product",
+                name: loaderData.name,
+                description: loaderData.description,
+                brand: { "@type": "Brand", name: "HMLND" },
+                offers: { "@type": "Offer", priceCurrency: "GHS", price: loaderData.price },
+              }),
+            }],
+          }
+        : {}),
+    };
   },
   component: ProductPage,
   notFoundComponent: () => <p className="px-10 py-32 text-center">This product doesn't exist.</p>,

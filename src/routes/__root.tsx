@@ -64,8 +64,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "HMLND — Homeland" },
       { property: "og:description", content: "HMLND (Homeland) — premium streetwear from Ghana." },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "HMLND" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    scripts: [{
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "HMLND",
+        alternateName: "Homeland",
+        description: "Premium streetwear from Ghana.",
+        address: { "@type": "PostalAddress", addressLocality: "Accra", addressCountry: "GH" },
+      }),
+    }],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
