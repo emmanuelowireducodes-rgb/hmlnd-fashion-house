@@ -20,7 +20,7 @@ export const Route = createFileRoute("/projects/$slug")({
 function ProjectPage() {
   const { slug } = Route.useLoaderData();
   const p = getProject(slug)!;
-  const next = projects[(projects.indexOf(p) + 1) % projects.length];
+  const next = projects[(projects.indexOf(p) + 1) % projects.length]!;
   return (
     <article>
       <section className="relative h-[85svh] overflow-hidden">

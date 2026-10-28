@@ -3,7 +3,8 @@ import { formatGHS, isProductSoldOut, type Product } from "@/lib/catalog";
 
 export function ProductCard({ product }: { product: Product }) {
   const soldOut = isProductSoldOut(product);
-  const [a, b] = product.images;
+  const a = product.images[0]!;
+  const b = product.images[1];
   return (
     <Link to="/products/$slug" params={{ slug: product.slug }} className="group block">
       <div className="relative aspect-[4/5] overflow-hidden bg-card">

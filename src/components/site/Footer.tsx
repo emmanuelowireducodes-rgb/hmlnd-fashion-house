@@ -13,7 +13,7 @@ export function Footer() {
         <nav aria-label="Shop" className="flex flex-col gap-3">
           <p className="eyebrow opacity-50">Shop</p>
           {NAV.map((n) => (
-            <Link key={n.label} to={n.to} params={"params" in n ? n.params : undefined} className="text-sm link-line w-fit">
+            <Link key={n.label} to={n.to} {...("params" in n ? { params: n.params } : {})} className="text-sm link-line w-fit">
               {n.label}
             </Link>
           ))}

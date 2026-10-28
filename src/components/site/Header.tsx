@@ -37,7 +37,7 @@ export function Header() {
         <div className="mx-auto grid h-16 max-w-[1600px] grid-cols-[1fr_auto_1fr] items-center px-5 md:h-20 md:px-10">
           <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
             {NAV.map((n) => (
-              <Link key={n.label} to={n.to} params={"params" in n ? n.params : undefined} className="eyebrow link-line">
+              <Link key={n.label} to={n.to} {...("params" in n ? { params: n.params } : {})} className="eyebrow link-line">
                 {n.label}
               </Link>
             ))}
@@ -77,7 +77,7 @@ export function Header() {
               <Link
                 key={n.label}
                 to={n.to}
-                params={"params" in n ? n.params : undefined}
+                {...("params" in n ? { params: n.params } : {})}
                 className="display animate-rise text-5xl"
                 style={{ animationDelay: `${i * 70}ms` }}
               >

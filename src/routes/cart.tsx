@@ -24,7 +24,7 @@ function CartPage() {
               const k = lineKey(l);
               return (
                 <li key={k} className="flex gap-5 py-6">
-                  {p && <img src={p.images[0].src} alt={p.images[0].alt} className="aspect-[4/5] w-24 object-cover" />}
+                  {p && <img src={p.images[0]!.src} alt={p.images[0]!.alt} className="aspect-[4/5] w-24 object-cover" />}
                   <div className="flex-1">
                     <p className="text-sm font-medium uppercase tracking-[0.08em]">{p?.name ?? l.slug}</p>
                     <p className="mt-1 text-xs text-muted-foreground">{l.colour} / {l.size}</p>
