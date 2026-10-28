@@ -53,7 +53,7 @@ function Section({
 
 function Index() {
   const featured = products.filter((p) => p.isNew).slice(0, 4);
-  const project = projects[0];
+  const project = projects[0]!;
   return (
     <>
       <h1 className="sr-only">HMLND — Homeland</h1>

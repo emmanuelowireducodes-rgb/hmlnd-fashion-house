@@ -3,7 +3,8 @@ import { formatGHS, isProductSoldOut, type Product } from "@/lib/catalog";
 
 export function ProductCard({ product }: { product: Product }) {
   const soldOut = isProductSoldOut(product);
-  const [a, b] = product.images;
+  const a = product.images[0]!;
+  const b = product.images[1];
   return (
     <Link to="/products/$slug" params={{ slug: product.slug }} className="group block">
       <div className="relative aspect-[4/5] overflow-hidden bg-card">
@@ -15,12 +16,12 @@ export function ProductCard({ product }: { product: Product }) {
           <span className="absolute left-3 top-3 bg-background px-2 py-1 eyebrow !text-[9px]">{soldOut ? "Sold out" : "New"}</span>
         )}
       </div>
-      <div className="mt-4 flex items-start justify-between gap-4">
+      <div className="mt-4 flex items-start justify-between gap-2 md:gap-4">
         <div>
           <h3 className="text-[13px] font-medium uppercase tracking-[0.08em]">{product.name}</h3>
           <p className="mt-1 text-xs text-muted-foreground">{product.colours.length} colour{product.colours.length > 1 ? "s" : ""}</p>
         </div>
-        <p className="text-[13px]">{formatGHS(product.price)}</p>
+        <p className="shrink-0 text-[13px]">{formatGHS(product.price)}</p>
       </div>
     </Link>
   );

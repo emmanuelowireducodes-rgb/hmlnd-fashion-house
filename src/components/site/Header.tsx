@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, Search, User, X } from "lucide-react";
 import { useCart } from "@/lib/cart";
+import { Logo } from "./Logo";
 
 export const NAV = [
   { label: "Mainline", to: "/collections/$handle", params: { handle: "mainline" } },
@@ -32,11 +33,11 @@ export function Header() {
       <div className="bg-primary py-2 text-center text-primary-foreground eyebrow !text-[10px]">
         Prototype storefront — demo catalogue &amp; prices
       </div>
-      <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b bg-background">
         <div className="mx-auto grid h-16 max-w-[1600px] grid-cols-[1fr_auto_1fr] items-center px-5 md:h-20 md:px-10">
           <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
             {NAV.map((n) => (
-              <Link key={n.label} to={n.to} params={"params" in n ? n.params : undefined} className="eyebrow link-line">
+              <Link key={n.label} to={n.to} {...("params" in n ? { params: n.params } : {})} className="eyebrow link-line">
                 {n.label}
               </Link>
             ))}
@@ -45,8 +46,8 @@ export function Header() {
             <Menu className="h-5 w-5" strokeWidth={1.25} />
           </button>
 
-          <Link to="/" className="wordmark text-lg md:text-2xl" aria-label="HMLND home">
-            HMLND
+          <Link to="/" className="text-xl md:text-[1.7rem]" aria-label="HMLND home">
+            <Logo />
           </Link>
 
           <div className="flex items-center justify-end gap-1 md:gap-4">
@@ -66,7 +67,7 @@ export function Header() {
       {open && (
         <div role="dialog" aria-modal="true" aria-label="Menu" className="fixed inset-0 z-50 flex flex-col bg-background animate-in fade-in duration-300">
           <div className="flex h-16 items-center justify-between px-5">
-            <span className="wordmark text-lg">HMLND</span>
+            <Logo className="text-xl" />
             <button className="p-2" aria-label="Close menu" onClick={() => setOpen(false)} autoFocus>
               <X className="h-5 w-5" strokeWidth={1.25} />
             </button>
@@ -76,7 +77,7 @@ export function Header() {
               <Link
                 key={n.label}
                 to={n.to}
-                params={"params" in n ? n.params : undefined}
+                {...("params" in n ? { params: n.params } : {})}
                 className="display animate-rise text-5xl"
                 style={{ animationDelay: `${i * 70}ms` }}
               >

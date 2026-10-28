@@ -1,18 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { NAV } from "./Header";
+import { Logo } from "./Logo";
 
 export function Footer() {
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="mx-auto grid max-w-[1600px] gap-12 px-5 py-16 md:grid-cols-4 md:px-10">
         <div className="md:col-span-2">
-          <p className="wordmark text-3xl md:text-5xl">HMLND</p>
+          <p className="text-4xl md:text-6xl"><Logo variant="light" /><span className="sr-only">HMLND</span></p>
           <p className="mt-4 max-w-xs text-sm opacity-60">Homeland. Clothing for the ground you carry with you.</p>
         </div>
         <nav aria-label="Shop" className="flex flex-col gap-3">
           <p className="eyebrow opacity-50">Shop</p>
           {NAV.map((n) => (
-            <Link key={n.label} to={n.to} params={"params" in n ? n.params : undefined} className="text-sm link-line w-fit">
+            <Link key={n.label} to={n.to} {...("params" in n ? { params: n.params } : {})} className="text-sm link-line w-fit">
               {n.label}
             </Link>
           ))}

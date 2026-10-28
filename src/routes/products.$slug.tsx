@@ -27,7 +27,7 @@ function ProductPage() {
   const p = getProduct(slug)!;
   const { add } = useCart();
   const [img, setImg] = useState(0);
-  const [colour, setColour] = useState(p.colours[0].name);
+  const [colour, setColour] = useState(p.colours[0]!.name);
   const [size, setSize] = useState("");
   const [qty, setQty] = useState(1);
   const sizes = SIZES.filter((s) => p.variants.some((v) => v.size === s));
@@ -36,7 +36,7 @@ function ProductPage() {
   return (
     <div className="mx-auto grid max-w-[1600px] gap-10 px-5 py-10 md:grid-cols-[1.4fr_1fr] md:px-10">
       <div>
-        <img src={p.images[img].src} alt={p.images[img].alt} width={1024} height={1280} className="aspect-[4/5] w-full bg-card object-cover" />
+        <img src={p.images[img]!.src} alt={p.images[img]!.alt} width={1024} height={1280} className="aspect-[4/5] w-full bg-card object-cover" />
         <div className="mt-3 flex gap-3">
           {p.images.map((im, i) => (
             <button key={i} onClick={() => setImg(i)} aria-label={`View image ${i + 1}`} className={`w-20 border ${i === img ? "border-foreground" : "border-transparent"}`}>
