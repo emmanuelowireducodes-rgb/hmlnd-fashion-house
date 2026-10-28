@@ -51,6 +51,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   );
 }
 
+// Set to the client's Adobe Fonts kit URL (e.g. https://use.typekit.net/<kit>.css) to enable Futura PT.
+const BRAND_FONT_KIT_URL = "";
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
@@ -66,7 +69,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Instrument+Serif&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;0,800;1,800&display=swap" },
+      ...(BRAND_FONT_KIT_URL ? [{ rel: "stylesheet", href: BRAND_FONT_KIT_URL }] : []),
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
