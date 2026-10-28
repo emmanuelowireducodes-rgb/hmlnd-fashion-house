@@ -14,7 +14,10 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "HMLND (Homeland): heavyweight Mainline essentials, Summer Christian Shirts and made-to-order Customised pieces from Ghana." },
       { property: "og:title", content: "HMLND — Homeland" },
       { property: "og:description", content: "Mainline, Summer Christian Shirts and Customised. Premium streetwear from Ghana." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
   component: Index,
 });

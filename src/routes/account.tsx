@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 export const Route = createFileRoute("/account")({
-  head: () => ({ meta: [{ title: "Account — HMLND" }, { name: "description", content: "HMLND client accounts — coming soon." }, { property: "og:title", content: "Account — HMLND" }, { property: "og:description", content: "HMLND client accounts — coming soon." }] }),
+  head: () => ({ meta: [{ title: "Account — HMLND" }, { name: "description", content: "HMLND client accounts — coming soon." }, { property: "og:title", content: "Account — HMLND" }, { property: "og:description", content: "HMLND client accounts — coming soon." }, { name: "robots", content: "noindex" }] }),
   component: AccountPage,
 });
 

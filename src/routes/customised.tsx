@@ -5,7 +5,10 @@ import hero from "@/assets/hero-customised.jpg";
 import { SIZES } from "@/lib/catalog";
 
 export const Route = createFileRoute("/customised")({
-  head: () => ({ meta: [{ title: "Customised — HMLND" }, { name: "description", content: "Made-to-order HMLND pieces. Start a custom enquiry." }, { property: "og:title", content: "Customised — HMLND" }, { property: "og:description", content: "Made-to-order HMLND pieces." }] }),
+  head: () => ({
+    meta: [{ title: "Customised — HMLND" }, { name: "description", content: "Made-to-order HMLND pieces. Start a custom enquiry." }, { property: "og:title", content: "Customised — HMLND" }, { property: "og:description", content: "Made-to-order HMLND pieces." }, { property: "og:type", content: "website" }, { property: "og:url", content: "/customised" }],
+    links: [{ rel: "canonical", href: "/customised" }],
+  }),
   component: CustomisedPage,
 });
 

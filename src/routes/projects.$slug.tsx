@@ -7,10 +7,13 @@ export const Route = createFileRoute("/projects/$slug")({
     if (!p) throw notFound();
     return { slug: p.slug, title: p.title, intro: p.intro };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const t = loaderData ? `${loaderData.title} — HMLND Projects` : "Project — HMLND";
     const d = loaderData?.intro ?? "HMLND project";
-    return { meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }, { property: "og:type", content: "article" }] };
+    return {
+      meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }, { property: "og:type", content: "article" }, { property: "og:url", content: `/projects/${params.slug}` }],
+      links: [{ rel: "canonical", href: `/projects/${params.slug}` }],
+    };
   },
   component: ProjectPage,
   notFoundComponent: () => <p className="px-10 py-32 text-center">Story not found.</p>,

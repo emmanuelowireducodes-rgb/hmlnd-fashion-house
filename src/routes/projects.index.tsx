@@ -2,7 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { projects } from "@/lib/projects";
 
 export const Route = createFileRoute("/projects/")({
-  head: () => ({ meta: [{ title: "Projects — HMLND" }, { name: "description", content: "HMLND campaigns, lookbooks and stories." }, { property: "og:title", content: "Projects — HMLND" }, { property: "og:description", content: "HMLND campaigns, lookbooks and stories." }] }),
+  head: () => ({
+    meta: [{ title: "Projects — HMLND" }, { name: "description", content: "HMLND campaigns, lookbooks and stories." }, { property: "og:title", content: "Projects — HMLND" }, { property: "og:description", content: "HMLND campaigns, lookbooks and stories." }, { property: "og:type", content: "website" }, { property: "og:url", content: "/projects" }],
+    links: [{ rel: "canonical", href: "/projects" }],
+  }),
   component: ProjectsPage,
 });
 
