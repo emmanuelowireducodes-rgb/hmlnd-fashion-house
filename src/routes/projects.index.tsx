@@ -1,11 +1,9 @@
+import { seoHead } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { projects } from "@/lib/projects";
 
 export const Route = createFileRoute("/projects/")({
-  head: () => ({
-    meta: [{ title: "Projects — HMLND" }, { name: "description", content: "HMLND campaigns, lookbooks and stories." }, { property: "og:title", content: "Projects — HMLND" }, { property: "og:description", content: "HMLND campaigns, lookbooks and stories." }, { property: "og:type", content: "website" }, { property: "og:url", content: "/projects" }],
-    links: [{ rel: "canonical", href: "/projects" }],
-  }),
+  head: () => seoHead({ title: "Projects & Lookbooks | HMLND", description: "Explore the HMLND editorial world through concept campaigns, lookbooks and streetwear stories.", path: "/projects", image: projects[0]!.cover }),
   component: ProjectsPage,
 });
 

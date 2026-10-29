@@ -1,3 +1,4 @@
+import { seoHead, breadcrumbScript } from "@/lib/seo";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { getProject, projects } from "@/lib/projects";
 
@@ -7,12 +8,12 @@ export const Route = createFileRoute("/projects/$slug")({
     if (!p) throw notFound();
     return { slug: p.slug, title: p.title, intro: p.intro };
   },
-  head: ({ loaderData, params }) => {
-    const t = loaderData ? `${loaderData.title} — HMLND Projects` : "Project — HMLND";
-    const d = loaderData?.intro ?? "HMLND project";
-    return {
-      meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }, { property: "og:type", content: "article" }, { property: "og:url", content: `/projects/${params.slug}` }],
-      links: [{ rel: "canonical", href: `/projects/${params.slug}` }],
+  head: ({ loaderData }) => {
+    const project = loaderData ? getProject(loaderData.slug) : undefined;
+    if (!project) return seoHead({ title: "Story Not Found | HMLND", description: "This story could not be found.", path: "/projects", noindex: true });
+    const path = `/projects/${project.slug}`;
+    return { ...seoHead({ title: `${project.title} | HMLND Projects`, description: project.intro, path, image: project.cover, imageAlt: project.coverAlt, type: "article" }),
+      scripts: breadcrumbScript([{ name: "Home", path: "/" }, { name: "Projects", path: "/projects" }, { name: project.title, path }]),
     };
   },
   component: ProjectPage,
@@ -36,7 +37,7 @@ function ProjectPage() {
         </div>
       </section>
       <div className="mx-auto max-w-3xl px-5 py-24 text-center"><p className="display text-3xl md:text-5xl">{p.intro}</p></div>
-      <div className="mx-auto grid max-w-5xl gap-10 px-5 md:grid-cols-2">{p.body.map((b) => <p key={b} className="text-sm leading-relaxed text-muted-foreground">{b}</p>)}</div>
+      <div className="mx-auto grid max-w-5xl gap-10 px-5 md:grid-cols-2">{p.body.map((b) => <p key={b} className="font-display text-sm leading-relaxed text-muted-foreground">{b}</p>)}</div>
       <div className="mx-auto mt-24 grid max-w-[1600px] gap-4 px-5 md:grid-cols-2 md:px-10">
         {p.gallery.map((g) => <img key={g.alt} src={g.src} alt={g.alt} loading="lazy" className="aspect-[4/5] w-full object-cover" />)}
       </div>

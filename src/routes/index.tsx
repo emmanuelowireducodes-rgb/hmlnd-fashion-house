@@ -1,35 +1,35 @@
+import { seoHead } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import mainline from "@/assets/hero-mainline.jpg";
 import summer from "@/assets/hero-summer.jpg";
 import customised from "@/assets/hero-customised.jpg";
-import { products } from "@/lib/catalog";
 import { projects } from "@/lib/projects";
-import { ProductCard } from "@/components/product/ProductCard";
 import { Newsletter } from "@/components/site/Newsletter";
+import { EditorialCta } from "@/components/site/EditorialCta";
+import { MainlineCarousel } from "@/components/site/MainlineCarousel";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "HMLND — Homeland | Mainline, Summer Shirts & Customised" },
-      { name: "description", content: "HMLND (Homeland): heavyweight Mainline essentials, Summer Christian Shirts and made-to-order Customised pieces from Ghana." },
-      { property: "og:title", content: "HMLND — Homeland" },
-      { property: "og:description", content: "Mainline, Summer Christian Shirts and Customised. Premium streetwear from Ghana." },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
-    ],
-    links: [{ rel: "canonical", href: "/" }],
-  }),
+  head: () => seoHead({ title: "Heritage Memory Language Narrative Divinity", description: "Explore HMLND (Homeland): Mainline streetwear, Summer Christian Shirts and customised clothing from Ghana.", path: "/", image: mainline }),
   component: Index,
 });
 
+type HeroPlacement = "lower-left" | "lower-center" | "lower-right";
+
+const heroPlacement = {
+  summer: { mobile: "lower-center", tablet: "lower-center", desktop: "lower-right" },
+  customised: { mobile: "lower-center", tablet: "lower-center", desktop: "lower-center" },
+} satisfies Record<string, { mobile: HeroPlacement; tablet: HeroPlacement; desktop: HeroPlacement }>;
+
 function Section({
-  image, alt, eyebrow, title, copy, cta, to, params, priority, align = "left",
+  image, alt, eyebrow, title, titleLines, cta, to, params, priority, placement, sectionId,
 }: {
-  image: string; alt: string; eyebrow: string; title: string; copy: string; cta: string;
-  to: "/collections/$handle" | "/customised"; params?: { handle: string }; priority?: boolean; align?: "left" | "right";
+  image: string; alt: string; eyebrow: string; title: string; titleLines?: string[]; cta: string;
+  to: "/collections/$handle" | "/customised"; params?: { handle: string }; priority?: boolean;
+  placement: { mobile: HeroPlacement; tablet: HeroPlacement; desktop: HeroPlacement };
+  sectionId: "summer" | "customised";
 }) {
   return (
-    <section className="group relative h-[92svh] min-h-[560px] overflow-hidden" aria-label={title}>
+    <section className={`collection-hero section-hero section-hero--${sectionId} group relative h-[92svh] min-h-[560px] overflow-hidden`} aria-label={title} data-section={sectionId} data-mobile-placement={placement.mobile} data-tablet-placement={placement.tablet} data-desktop-placement={placement.desktop}>
       <img
         src={image}
         alt={alt}
@@ -37,70 +37,50 @@ function Section({
         height={1088}
         loading={priority ? "eager" : "lazy"}
         fetchPriority={priority ? "high" : "auto"}
-        className="absolute inset-0 h-full w-full object-cover img-zoom group-hover:scale-[1.02]"
+        className={`section-hero__image absolute inset-0 h-full w-full object-cover img-zoom group-hover:scale-[1.02] section-hero__image--${sectionId}`}
       />
-      <div className="absolute inset-0 hero-overlay" />
-      <div className={`relative mx-auto flex h-full max-w-[1600px] flex-col justify-end px-5 pb-14 text-background md:px-10 md:pb-20 ${align === "right" ? "md:items-end md:text-right" : ""}`}>
+      <div className="collection-hero__shade absolute inset-0" />
+      <div className={`collection-hero__content section-copy section-copy--${sectionId} text-background`}>
         <p className="eyebrow animate-rise">{eyebrow}</p>
-        <h2 className="display mt-4 max-w-3xl text-6xl animate-rise md:text-8xl lg:text-[9rem]" style={{ animationDelay: "120ms" }}>
-          {title}
+        <h2 className={`campaign-title section-title section-title--${sectionId} mt-3 animate-rise`} style={{ animationDelay: "120ms" }}>
+          {titleLines ? titleLines.map((line) => <span className="block" key={line}>{line}</span>) : title}
         </h2>
-        <p className="mt-5 max-w-sm text-sm opacity-85 animate-rise" style={{ animationDelay: "220ms" }}>{copy}</p>
-        <Link to={to} params={params as never} className="btn btn-on-image mt-8 w-fit animate-rise" style={{ animationDelay: "320ms" }}>
-          {cta}
-        </Link>
+        <EditorialCta tone="light" className="section-cta mt-5 animate-rise" style={{ animationDelay: "220ms" }}>
+          <Link to={to} params={params as never}>{cta}</Link>
+        </EditorialCta>
       </div>
     </section>
   );
 }
 
 function Index() {
-  const featured = products.filter((p) => p.isNew).slice(0, 4);
   const project = projects[0]!;
   return (
     <>
       <h1 className="sr-only">HMLND — Homeland</h1>
-      <Section
-        priority
-        image={mainline}
-        alt="Model in an oversized stone hoodie and wide trousers in a sunlit concrete space"
-        eyebrow="HMLND Mainline"
-        title="Mainline"
-        copy="Heavyweight foundations in stone, taupe and washed black."
-        cta="Shop Mainline"
-        to="/collections/$handle"
-        params={{ handle: "mainline" }}
-      />
-
-      <section className="mx-auto max-w-[1600px] px-5 py-24 md:px-10" aria-labelledby="new-title">
-        <div className="mb-10 flex items-end justify-between">
-          <h2 id="new-title" className="display text-4xl md:text-5xl">New Arrivals</h2>
-          <Link to="/collections/$handle" params={{ handle: "mainline" }} className="eyebrow link-line">View all</Link>
-        </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:gap-x-6 lg:grid-cols-4">
-          {featured.map((p) => <ProductCard key={p.slug} product={p} />)}
-        </div>
-      </section>
+      <MainlineCarousel />
 
       <Section
+        sectionId="summer"
         image={summer}
+        placement={heroPlacement.summer}
         alt="Two models in white linen shirts on a rocky coastline at sunset"
         eyebrow="HMLND Summer Christian Shirts"
         title="Summer Christian Shirts"
-        copy="Open collars and washed linen for long, golden days."
-        cta="Shop Summer"
+        titleLines={["Summer", "Christian", "Shirts"]}
+        cta="Shop Now"
         to="/collections/$handle"
         params={{ handle: "summer-christian-shirts" }}
-        align="right"
       />
 
       <Section
+        sectionId="customised"
         image={customised}
+        placement={heroPlacement.customised}
         alt="A tailor's hands finishing a black garment on a wooden table"
-        eyebrow="HMLND Customised"
+        eyebrow="Create your idea with us"
         title="Customised"
-        copy="Made to order. Your idea, finished in our atelier."
-        cta="Start an enquiry"
+        cta="Start Creating"
         to="/customised"
       />
 
@@ -112,9 +92,9 @@ function Index() {
           <p className="eyebrow text-muted-foreground">Projects — {project.number}</p>
           <h2 className="display mt-5 text-5xl md:text-7xl">{project.title}</h2>
           <p className="mt-6 max-w-md text-muted-foreground">{project.intro}</p>
-          <div className="mt-10 flex gap-6">
-            <Link to="/projects/$slug" params={{ slug: project.slug }} className="btn btn-solid">Read the story</Link>
-            <Link to="/projects" className="eyebrow link-line self-center">All projects</Link>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <EditorialCta><Link to="/projects/$slug" params={{ slug: project.slug }}>Read the story</Link></EditorialCta>
+            <EditorialCta><Link to="/projects">All projects</Link></EditorialCta>
           </div>
         </div>
       </section>

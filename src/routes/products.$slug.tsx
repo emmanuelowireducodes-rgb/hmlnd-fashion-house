@@ -1,3 +1,4 @@
+import { seoHead, breadcrumbScript, absoluteUrl, jsonLd } from "@/lib/seo";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -12,27 +13,20 @@ export const Route = createFileRoute("/products/$slug")({
     if (!p) throw notFound();
     return { slug: p.slug, name: p.name, description: p.description, price: p.price };
   },
-  head: ({ loaderData, params }) => {
-    const t = loaderData ? `${loaderData.name} — HMLND` : "Product — HMLND";
-    const d = loaderData?.description ?? "HMLND product";
-    return {
-      meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }, { property: "og:type", content: "product" }, { property: "og:url", content: `/products/${params.slug}` }],
-      links: [{ rel: "canonical", href: `/products/${params.slug}` }],
-      ...(loaderData
-        ? {
-            scripts: [{
-              type: "application/ld+json",
-              children: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "Product",
-                name: loaderData.name,
-                description: loaderData.description,
-                brand: { "@type": "Brand", name: "HMLND" },
-                offers: { "@type": "Offer", priceCurrency: "GHS", price: loaderData.price },
-              }),
-            }],
-          }
-        : {}),
+  head: ({ loaderData }) => {
+    const product = loaderData ? getProduct(loaderData.slug) : undefined;
+    if (!product) return seoHead({ title: "Product Not Found | HMLND", description: "This product could not be found.", path: "/products", noindex: true });
+    const path = `/products/${product.slug}`;
+    return { ...seoHead({ title: `${product.name} | HMLND`, description: product.description, path, image: product.images[0]!.src, imageAlt: product.images[0]!.alt }),
+      scripts: [
+        ...breadcrumbScript([{ name: "Home", path: "/" }, { name: product.collection === "mainline" ? "Mainline" : "Summer Christian Shirts", path: `/collections/${product.collection}` }, { name: product.name, path }]),
+        { type: "application/ld+json", children: jsonLd({
+          "@context": "https://schema.org", "@type": "Product", name: product.name,
+          description: product.description, url: absoluteUrl(path),
+          image: product.images.map((image) => absoluteUrl(image.src)).filter(Boolean),
+          // Demo catalogue: do not publish an Offer until real prices and checkout are live.
+        }) },
+      ],
     };
   },
   component: ProductPage,
@@ -65,7 +59,7 @@ function ProductPage() {
       </div>
       <div className="md:sticky md:top-28 md:self-start">
         <Link to="/collections/$handle" params={{ handle: p.collection }} className="eyebrow text-muted-foreground link-line">Back to collection</Link>
-        <h1 className="mt-6 text-2xl font-medium uppercase tracking-[0.08em]">{p.name}</h1>
+        <h1 className="mt-6 font-display text-2xl font-normal uppercase tracking-[0.08em]">{p.name}</h1>
         <p className="mt-2">{formatGHS(p.price)} <span className="text-xs text-muted-foreground">(demo price)</span></p>
         <p className="mt-6 text-sm text-muted-foreground">{p.description}</p>
 

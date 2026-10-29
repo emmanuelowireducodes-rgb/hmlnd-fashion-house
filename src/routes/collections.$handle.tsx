@@ -1,3 +1,4 @@
+import { seoHead, breadcrumbScript } from "@/lib/seo";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { collections, getCollectionProducts, isCollectionHandle, SIZES } from "@/lib/catalog";
@@ -9,13 +10,11 @@ export const Route = createFileRoute("/collections/$handle")({
     return { handle: params.handle };
   },
   head: ({ loaderData }) => {
-    const c = loaderData ? collections[loaderData.handle] : null;
-    const title = c ? `${c.title} — HMLND` : "Collection — HMLND";
-    const desc = c?.intro ?? "HMLND collection";
-    const path = `/collections/${loaderData?.handle ?? ""}`;
-    return {
-      meta: [{ title }, { name: "description", content: desc }, { property: "og:title", content: title }, { property: "og:description", content: desc }, { property: "og:type", content: "website" }, { property: "og:url", content: path }],
-      links: [{ rel: "canonical", href: path }],
+    const c = loaderData ? collections[loaderData.handle] : undefined;
+    if (!c) return seoHead({ title: "Collection Not Found | HMLND", description: "This collection could not be found.", path: "/collections", noindex: true });
+    const path = `/collections/${c.handle}`;
+    return { ...seoHead({ title: `${c.title} | HMLND Streetwear`, description: c.intro, path, image: c.image, imageAlt: `HMLND ${c.title}` }),
+      scripts: breadcrumbScript([{ name: "Home", path: "/" }, { name: c.title, path }]),
     };
   },
   component: CollectionPage,

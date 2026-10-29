@@ -1,3 +1,4 @@
+import { seoHead, absoluteUrl, jsonLd } from "@/lib/seo";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -8,10 +9,9 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -33,9 +33,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4">
@@ -51,40 +48,28 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   );
 }
 
-// Set to the client's Adobe Fonts kit URL (e.g. https://use.typekit.net/<kit>.css) to enable Futura PT.
-const BRAND_FONT_KIT_URL = "";
+// Set VITE_BRAND_FONT_KIT_URL to the client's authorized Adobe Fonts Web Project URL.
+const BRAND_FONT_KIT_URL = import.meta.env["VITE_BRAND_FONT_KIT_URL"]?.trim() ?? "";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "HMLND — Homeland" },
-      { name: "description", content: "HMLND (Homeland) — premium streetwear from Ghana." },
-      { property: "og:title", content: "HMLND — Homeland" },
-      { property: "og:description", content: "HMLND (Homeland) — premium streetwear from Ghana." },
-      { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "HMLND" },
-      { name: "twitter:card", content: "summary_large_image" },
+      ...seoHead({ title: "Page Not Found | HMLND", description: "The requested HMLND page could not be found.", path: "/", noindex: true }).meta,
     ],
-    scripts: [{
-      type: "application/ld+json",
-      children: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        name: "HMLND",
-        alternateName: "Homeland",
-        description: "Premium streetwear from Ghana.",
-        address: { "@type": "PostalAddress", addressLocality: "Accra", addressCountry: "GH" },
-      }),
-    }],
+    scripts: [{ type: "application/ld+json", children: jsonLd({
+      "@context": "https://schema.org", "@type": "Organization", name: "HMLND", alternateName: "Heritage Memory Language Narrative Divinity",
+      url: absoluteUrl("/"), logo: absoluteUrl("/hmlnd-logo-dark.png"), description: "Streetwear from Ghana.",
+    }) }],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;0,800;1,800&display=swap" },
       ...(BRAND_FONT_KIT_URL ? [{ rel: "stylesheet", href: BRAND_FONT_KIT_URL }] : []),
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.ico?v=hmlnd", type: "image/x-icon", sizes: "16x16 32x32 48x48 64x64 128x128 256x256" },
+      { rel: "icon", href: "/favicon.png?v=hmlnd", type: "image/png", sizes: "256x256" },
     ],
   }),
   shellComponent: RootShell,

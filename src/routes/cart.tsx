@@ -1,10 +1,11 @@
+import { seoHead } from "@/lib/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCart } from "@/lib/cart";
 import { lineKey } from "@/lib/cart-math";
 import { formatGHS, getProduct } from "@/lib/catalog";
 
 export const Route = createFileRoute("/cart")({
-  head: () => ({ meta: [{ title: "Bag — HMLND" }, { name: "description", content: "Your HMLND shopping bag." }, { property: "og:title", content: "Bag — HMLND" }, { property: "og:description", content: "Your HMLND shopping bag." }, { name: "robots", content: "noindex" }] }),
+  head: () => seoHead({ title: "Shopping Bag | HMLND", description: "Review your HMLND shopping bag.", path: "/cart", noindex: true }),
   component: CartPage,
 });
 

@@ -1,10 +1,11 @@
+import { seoHead } from "@/lib/seo";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { searchProducts } from "@/lib/catalog";
 import { ProductGrid } from "@/components/product/ProductCard";
 
 export const Route = createFileRoute("/search")({
   validateSearch: (s: Record<string, unknown>) => ({ q: typeof s["q"] === "string" ? s["q"] : "" }),
-  head: () => ({ meta: [{ title: "Search — HMLND" }, { name: "description", content: "Search the HMLND catalogue." }, { property: "og:title", content: "Search — HMLND" }, { property: "og:description", content: "Search the HMLND catalogue." }, { name: "robots", content: "noindex" }] }),
+  head: () => seoHead({ title: "Search | HMLND", description: "Search the HMLND catalogue.", path: "/search", noindex: true }),
   component: SearchPage,
 });
 
