@@ -9,7 +9,7 @@ import mainline from "@/assets/hero-mainline.jpg";
 import summer from "@/assets/hero-summer.jpg";
 import homeland from "@/assets/project-homeland.jpg";
 
-export type CollectionHandle = "mainline" | "summer-christian-shirts";
+export type CollectionHandle = string;
 
 export const SIZES = ["XS", "S", "M", "L", "XL", "XXL"] as const;
 export type Size = (typeof SIZES)[number];
@@ -24,6 +24,7 @@ export interface Product {
   slug: string;
   name: string;
   collection: CollectionHandle;
+  collections?: string[];
   /** Price in pesewas (GHS minor unit) to avoid float errors. */
   price: number;
   colours: { name: string; swatch: string }[];
@@ -33,6 +34,67 @@ export interface Product {
   details: string[];
   care: string[];
   isNew?: boolean;
+}
+
+export type PublishedProductRecord = {
+  slug: string;
+  name: string;
+  description: string;
+  pricePesewas: number;
+  images: { src: string; alt: string }[];
+  sizes: string[];
+  colours: string[];
+  variants: { sku?: string; size: string; colour: string; available?: boolean }[];
+  collectionIds?: string[];
+};
+
+const swatches = ["#171715", "#eee9df", "#77736d", "#f7f7f4", "#bca98c", "#6d7780"];
+export function fromPublishedProduct(record: PublishedProductRecord): Product {
+  return {
+    slug: record.slug,
+    name: record.name,
+    collection: record.collectionIds?.[0] || "",
+    collections: record.collectionIds || [],
+    price: record.pricePesewas,
+    colours: record.colours.map((name, index) => ({
+      name,
+      swatch: swatches[index % swatches.length]!,
+    })),
+    variants: record.variants.map((variant) => ({
+      colour: variant.colour,
+      size: variant.size as Size,
+      available: variant.available ?? false,
+    })),
+    images: record.images.length
+      ? record.images
+      : [{ src: "/images/hero-mainline.jpg", alt: record.name }],
+    description: record.description,
+    details: [],
+    care: [],
+  };
+}
+
+export async function fetchPublishedProducts(): Promise<Product[]> {
+  const response = await fetch("/api/site/products");
+  if (!response.ok) throw new Error("Published products are temporarily unavailable.");
+  const rows = (await response.json()) as PublishedProductRecord[];
+  return rows.map(fromPublishedProduct);
+}
+
+export async function fetchPublishedCollection(slug: string): Promise<{
+  name: string;
+  slug: string;
+  description: string;
+  coverImage: string;
+  products: Product[];
+}> {
+  const response = await fetch(`/api/site/collections/${encodeURIComponent(slug)}`);
+  if (!response.ok)
+    throw new Error(
+      response.status === 404 ? "Collection not found" : "Collection is temporarily unavailable.",
+    );
+  const collection = await response.json();
+  return { ...collection, products: collection.products.map(fromPublishedProduct) };
 }
 
 export interface Collection {
@@ -83,10 +145,19 @@ export const products: Product[] = [
     variants: grid([BLACK.name, TAUPE.name], SIZES, ["Washed Black/XS", "Taupe/XXL", "Taupe/XS"]),
     images: [
       { src: hoodie, alt: "Heavyweight hoodie in washed black, front view" },
-      { src: mainline, alt: "Model wearing an oversized hoodie and wide trousers in a concrete space" },
+      {
+        src: mainline,
+        alt: "Model wearing an oversized hoodie and wide trousers in a concrete space",
+      },
     ],
-    description: "A dense brushed-back fleece hoodie with dropped shoulders and a deep double-layer hood.",
-    details: ["Demo spec: 480gsm cotton fleece", "Oversized fit — size down for a closer fit", "Kangaroo pocket", "Ribbed cuffs and hem"],
+    description:
+      "A dense brushed-back fleece hoodie with dropped shoulders and a deep double-layer hood.",
+    details: [
+      "Demo spec: 480gsm cotton fleece",
+      "Oversized fit — size down for a closer fit",
+      "Kangaroo pocket",
+      "Ribbed cuffs and hem",
+    ],
     care: ["Cold wash inside out", "Do not tumble dry", "Dry flat in shade"],
     isNew: true,
   },
@@ -117,7 +188,11 @@ export const products: Product[] = [
       { src: mainline, alt: "Model in wide trousers standing in shadow and light" },
     ],
     description: "A relaxed wide-leg trouser with an elasticated waist and long, pooling hem.",
-    details: ["Demo spec: 420gsm cotton fleece", "Side seam pockets", "Elasticated waist with drawcord"],
+    details: [
+      "Demo spec: 420gsm cotton fleece",
+      "Side seam pockets",
+      "Elasticated waist with drawcord",
+    ],
     care: ["Cold wash inside out", "Dry flat"],
     isNew: true,
   },
@@ -127,7 +202,11 @@ export const products: Product[] = [
     collection: "mainline",
     price: 145000,
     colours: [BLACK],
-    variants: grid([BLACK.name], ["S", "M", "L", "XL"], ["Washed Black/S", "Washed Black/M", "Washed Black/L", "Washed Black/XL"]),
+    variants: grid(
+      [BLACK.name],
+      ["S", "M", "L", "XL"],
+      ["Washed Black/S", "Washed Black/M", "Washed Black/L", "Washed Black/XL"],
+    ),
     images: [
       { src: homeland, alt: "Three models in layered monochrome outerwear on open land" },
       { src: hoodie, alt: "Washed black fabric detail" },
@@ -163,7 +242,8 @@ export const products: Product[] = [
       { src: summer, alt: "Model in a light shirt looking out over the sea" },
       { src: shirt, alt: "Camp collar shirt detail" },
     ],
-    description: "A softly structured short-sleeve shirt with a notched camp collar, cut for warm evenings.",
+    description:
+      "A softly structured short-sleeve shirt with a notched camp collar, cut for warm evenings.",
     details: ["Demo spec: linen-cotton blend", "Straight hem", "Boxy fit"],
     care: ["Cold gentle wash", "Line dry"],
   },
@@ -208,7 +288,12 @@ export function searchProducts(query: string) {
   const q = query.trim().toLowerCase();
   if (!q) return [];
   return products.filter((p) =>
-    [p.name, p.description, collections[p.collection].title, ...p.colours.map((c) => c.name)]
+    [
+      p.name,
+      p.description,
+      collections[p.collection]?.title || p.collection,
+      ...p.colours.map((c) => c.name),
+    ]
       .join(" ")
       .toLowerCase()
       .includes(q),
@@ -216,5 +301,7 @@ export function searchProducts(query: string) {
 }
 
 export function formatGHS(pesewas: number) {
-  return new Intl.NumberFormat("en-GH", { style: "currency", currency: "GHS" }).format(pesewas / 100);
+  return new Intl.NumberFormat("en-GH", { style: "currency", currency: "GHS" }).format(
+    pesewas / 100,
+  );
 }

@@ -16,10 +16,17 @@ import { Route as CustomisedRouteImport } from './routes/customised'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as StudioRouteImport } from './routes/studio'
 import { Route as CollectionsHandleRouteImport } from './routes/collections.$handle'
 import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
+import { Route as StudioCollectionsRouteImport } from './routes/studio.collections'
+import { Route as StudioDashboardRouteImport } from './routes/studio.dashboard'
+import { Route as StudioInventoryRouteImport } from './routes/studio.inventory'
+import { Route as StudioMediaRouteImport } from './routes/studio.media'
+import { Route as StudioOrdersRouteImport } from './routes/studio.orders'
+import { Route as StudioProductsRouteImport } from './routes/studio.products'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -56,6 +63,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioRoute = StudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CollectionsHandleRoute = CollectionsHandleRouteImport.update({
   id: '/collections/$handle',
   path: '/collections/$handle',
@@ -76,6 +88,36 @@ const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
   path: '/projects/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioCollectionsRoute = StudioCollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioDashboardRoute = StudioDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioInventoryRoute = StudioInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioMediaRoute = StudioMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioOrdersRoute = StudioOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => StudioRoute,
+} as any)
+const StudioProductsRoute = StudioProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => StudioRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -85,9 +127,16 @@ export interface FileRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/studio': typeof StudioRouteWithChildren
   '/collections/$handle': typeof CollectionsHandleRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/studio/collections': typeof StudioCollectionsRoute
+  '/studio/dashboard': typeof StudioDashboardRoute
+  '/studio/inventory': typeof StudioInventoryRoute
+  '/studio/media': typeof StudioMediaRoute
+  '/studio/orders': typeof StudioOrdersRoute
+  '/studio/products': typeof StudioProductsRoute
   '/projects/': typeof ProjectsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -98,9 +147,16 @@ export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/studio': typeof StudioRouteWithChildren
   '/collections/$handle': typeof CollectionsHandleRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/studio/collections': typeof StudioCollectionsRoute
+  '/studio/dashboard': typeof StudioDashboardRoute
+  '/studio/inventory': typeof StudioInventoryRoute
+  '/studio/media': typeof StudioMediaRoute
+  '/studio/orders': typeof StudioOrdersRoute
+  '/studio/products': typeof StudioProductsRoute
   '/projects': typeof ProjectsIndexRoute
 }
 export interface FileRoutesById {
@@ -112,9 +168,16 @@ export interface FileRoutesById {
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/studio': typeof StudioRouteWithChildren
   '/collections/$handle': typeof CollectionsHandleRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/studio/collections': typeof StudioCollectionsRoute
+  '/studio/dashboard': typeof StudioDashboardRoute
+  '/studio/inventory': typeof StudioInventoryRoute
+  '/studio/media': typeof StudioMediaRoute
+  '/studio/orders': typeof StudioOrdersRoute
+  '/studio/products': typeof StudioProductsRoute
   '/projects/': typeof ProjectsIndexRoute
 }
 export interface FileRouteTypes {
@@ -127,9 +190,16 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
+    | '/studio'
     | '/collections/$handle'
     | '/products/$slug'
     | '/projects/$slug'
+    | '/studio/collections'
+    | '/studio/dashboard'
+    | '/studio/inventory'
+    | '/studio/media'
+    | '/studio/orders'
+    | '/studio/products'
     | '/projects/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -140,9 +210,16 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
+    | '/studio'
     | '/collections/$handle'
     | '/products/$slug'
     | '/projects/$slug'
+    | '/studio/collections'
+    | '/studio/dashboard'
+    | '/studio/inventory'
+    | '/studio/media'
+    | '/studio/orders'
+    | '/studio/products'
     | '/projects'
   id:
     | '__root__'
@@ -153,9 +230,16 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
+    | '/studio'
     | '/collections/$handle'
     | '/products/$slug'
     | '/projects/$slug'
+    | '/studio/collections'
+    | '/studio/dashboard'
+    | '/studio/inventory'
+    | '/studio/media'
+    | '/studio/orders'
+    | '/studio/products'
     | '/projects/'
   fileRoutesById: FileRoutesById
 }
@@ -167,6 +251,7 @@ export interface RootRouteChildren {
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StudioRoute: typeof StudioRouteWithChildren
   CollectionsHandleRoute: typeof CollectionsHandleRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
@@ -224,6 +309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/studio': {
+      id: '/studio'
+      path: '/studio'
+      fullPath: '/studio'
+      preLoaderRoute: typeof StudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/collections/$handle': {
       id: '/collections/$handle'
       path: '/collections/$handle'
@@ -252,8 +344,71 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/studio/collections': {
+      id: '/studio/collections'
+      path: '/collections'
+      fullPath: '/studio/collections'
+      preLoaderRoute: typeof StudioCollectionsRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/dashboard': {
+      id: '/studio/dashboard'
+      path: '/dashboard'
+      fullPath: '/studio/dashboard'
+      preLoaderRoute: typeof StudioDashboardRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/inventory': {
+      id: '/studio/inventory'
+      path: '/inventory'
+      fullPath: '/studio/inventory'
+      preLoaderRoute: typeof StudioInventoryRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/media': {
+      id: '/studio/media'
+      path: '/media'
+      fullPath: '/studio/media'
+      preLoaderRoute: typeof StudioMediaRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/orders': {
+      id: '/studio/orders'
+      path: '/orders'
+      fullPath: '/studio/orders'
+      preLoaderRoute: typeof StudioOrdersRouteImport
+      parentRoute: typeof StudioRoute
+    }
+    '/studio/products': {
+      id: '/studio/products'
+      path: '/products'
+      fullPath: '/studio/products'
+      preLoaderRoute: typeof StudioProductsRouteImport
+      parentRoute: typeof StudioRoute
+    }
   }
 }
+
+interface StudioRouteChildren {
+  StudioCollectionsRoute: typeof StudioCollectionsRoute
+  StudioDashboardRoute: typeof StudioDashboardRoute
+  StudioInventoryRoute: typeof StudioInventoryRoute
+  StudioMediaRoute: typeof StudioMediaRoute
+  StudioOrdersRoute: typeof StudioOrdersRoute
+  StudioProductsRoute: typeof StudioProductsRoute
+}
+
+const StudioRouteChildren: StudioRouteChildren = {
+  StudioCollectionsRoute: StudioCollectionsRoute,
+  StudioDashboardRoute: StudioDashboardRoute,
+  StudioInventoryRoute: StudioInventoryRoute,
+  StudioMediaRoute: StudioMediaRoute,
+  StudioOrdersRoute: StudioOrdersRoute,
+  StudioProductsRoute: StudioProductsRoute,
+}
+
+const StudioRouteWithChildren =
+  StudioRoute._addFileChildren(StudioRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -263,6 +418,7 @@ const rootRouteChildren: RootRouteChildren = {
   RobotsDottxtRoute: RobotsDottxtRoute,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StudioRoute: StudioRouteWithChildren,
   CollectionsHandleRoute: CollectionsHandleRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,

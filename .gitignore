@@ -33,3 +33,4 @@ dist-ssr
 
 # Intermediate server build used only to export static HTML
 .static-build/
+.data/

@@ -9,10 +9,25 @@ npm install
 npm run dev
 ```
 
+The development command starts Vite and the local Studio API. To create the first local owner, set bootstrap credentials in PowerShell before first startup:
+
+```powershell
+$env:STUDIO_BOOTSTRAP_EMAIL = "owner@example.com"
+$env:STUDIO_BOOTSTRAP_PASSWORD = "a-unique-password-at-least-14-chars"
+npm run dev
+```
+
+Open `/studio`, sign in, and use Website Builder. The first startup creates `.data/studio.sqlite`; uploaded media is stored under `.data/media`. The bootstrap is one-time: after the owner record is created, remove the credentials from the environment. Local persistence uses Node 22's experimental `node:sqlite`; this is a development adapter and is not a production database recommendation. See `docs/hmlnd-studio-architecture.md` for current limitations and migration direction.
+
+After password sign-in, open **Security & trusted devices** to enable a four-digit PIN for that browser. A password is still required on untrusted browsers and for PIN enrolment, changes, resets and device revocation. PIN lockout and device records persist in SQLite. This convenience flow is for local development/testing; it is not connected to a production authentication deployment.
+
+For local owner setup only, `npm run studio:owner:local` reads `STUDIO_LOCAL_OWNER_EMAIL` and `STUDIO_LOCAL_OWNER_PASSWORD` from the process environment, updates the existing owner row in place or creates one, and stores only a scrypt hash. It is disabled when `NODE_ENV=production`.
+
 ## Checks and builds
 
 ```sh
 npm run test
+npm run test:studio
 npm run lint
 npm run build
 ```

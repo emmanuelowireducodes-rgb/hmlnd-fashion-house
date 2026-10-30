@@ -4,7 +4,11 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "node scripts/dev.mjs",
+    "dev:storefront": "vite dev",
+    "dev:studio-api": "node scripts/studio-server.mjs",
+    "studio:owner:local": "node scripts/configure-local-owner.mjs",
+    "test:studio": "node scripts/studio-api-smoke.mjs",
     "build": "node scripts/build-static.mjs",
     "build:dev": "node scripts/build-static.mjs --mode development",
     "preview": "node scripts/preview-static.mjs",

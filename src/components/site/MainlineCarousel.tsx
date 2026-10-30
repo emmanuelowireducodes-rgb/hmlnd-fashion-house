@@ -19,12 +19,30 @@ const slides = [
 
 const SWIPE_THRESHOLD = 48;
 
+type CmsHero = {
+  id: string;
+  image?: string;
+  title?: string;
+  eyebrow?: string;
+  cta?: string;
+  focalX?: number;
+  focalY?: number;
+  desktop?: { x: number; y: number; align: string; ctaX?: number; ctaY?: number };
+  tablet?: { x: number; y: number; align: string; ctaX?: number; ctaY?: number };
+  mobile?: { x: number; y: number; align: string; ctaX?: number; ctaY?: number };
+  href?: string;
+  visible?: boolean;
+  order?: number;
+};
+
 export function MainlineCarousel() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [interacting, setInteracting] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [campaign, setCampaign] = useState<CmsHero | null>(null);
+  const [breakpoint, setBreakpoint] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const carouselRef = useRef<HTMLElement>(null);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
 
@@ -34,6 +52,29 @@ export function MainlineCarousel() {
     update();
     media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const update = () =>
+      setBreakpoint(
+        window.innerWidth < 768 ? "mobile" : window.innerWidth < 1200 ? "tablet" : "desktop",
+      );
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/site/home")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { sections?: CmsHero[] } | null) => {
+        if (alive) setCampaign(data?.sections?.find((item) => item.id === "mainline") || null);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -71,9 +112,12 @@ export function MainlineCarousel() {
     goTo(activeSlide + (deltaX < 0 ? 1 : -1));
   };
 
+  if (campaign?.visible === false) return null;
+
   return (
     <section
       ref={carouselRef}
+      style={campaign ? { order: campaign.order ?? 0 } : undefined}
       className="collection-hero section-hero section-hero--mainline mainline-carousel group relative h-[92svh] min-h-[560px] overflow-hidden"
       aria-label="Mainline collection campaigns"
       aria-roledescription="carousel"
@@ -118,7 +162,7 @@ export function MainlineCarousel() {
             aria-hidden={index !== activeSlide}
           >
             <img
-              src={slide.src}
+              src={index === 0 && campaign?.image ? campaign.image : slide.src}
               alt={slide.alt}
               width={index === 0 ? 1920 : 1122}
               height={index === 0 ? 1088 : 1402}
@@ -126,6 +170,11 @@ export function MainlineCarousel() {
               fetchPriority={index === 0 ? "high" : "low"}
               decoding="async"
               draggable={false}
+              style={
+                index === 0
+                  ? { objectPosition: `${campaign?.focalX ?? 50}% ${campaign?.focalY ?? 50}%` }
+                  : undefined
+              }
               className={`mainline-carousel__image ${slide.className}`}
             />
           </div>
@@ -133,19 +182,64 @@ export function MainlineCarousel() {
       </div>
 
       <div className="collection-hero__shade mainline-carousel__shade" />
-      <div className="collection-hero__content mainline-carousel__content campaign-copy campaign-copy--mainline text-background">
-        <p className="eyebrow animate-rise">Discover our essentials</p>
-        <h2 className="campaign-title section-title section-title--mainline mt-3 animate-rise" style={{ animationDelay: "120ms" }}>
-          Mainline
-        </h2>
+      <div
+        className="collection-hero__content mainline-carousel__content campaign-copy campaign-copy--mainline text-background"
+        style={campaign ? { inset: 0, width: "auto", transform: "none" } : undefined}
+      >
+        <div
+          style={
+            campaign
+              ? {
+                  position: "absolute",
+                  left: `${campaign[breakpoint]?.x ?? 50}%`,
+                  top: `${campaign[breakpoint]?.y ?? 68}%`,
+                  bottom: "auto",
+                  transform: "translate(-50%,-50%)",
+                  width: "min(80%, 34rem)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems:
+                    campaign[breakpoint]?.align === "left"
+                      ? "flex-start"
+                      : campaign[breakpoint]?.align === "right"
+                        ? "flex-end"
+                        : "center",
+                  textAlign: (campaign[breakpoint]?.align || "center") as
+                    "left" | "center" | "right",
+                }
+              : undefined
+          }
+        >
+          <p className="eyebrow animate-rise">{campaign?.eyebrow || "Discover our essentials"}</p>
+          <h2
+            className="campaign-title section-title section-title--mainline mt-3 animate-rise"
+            style={{ animationDelay: "120ms" }}
+          >
+            {campaign?.title || "Mainline"}
+          </h2>
+        </div>
         <EditorialCta
           tone="light"
           className="section-cta mt-5 animate-rise"
-          style={{ animationDelay: "220ms" }}
+          style={
+            campaign
+              ? {
+                  position: "absolute",
+                  left: `${campaign[breakpoint]?.ctaX ?? 50}%`,
+                  top: `${campaign[breakpoint]?.ctaY ?? 82}%`,
+                  transform: "translate(-50%,-50%)",
+                  margin: 0,
+                }
+              : { animationDelay: "220ms" }
+          }
         >
-          <Link to="/collections/$handle" params={{ handle: "mainline" }}>
-            Shop Now
-          </Link>
+          {campaign?.href ? (
+            <a href={campaign.href}>{campaign.cta || "Shop Now"}</a>
+          ) : (
+            <Link to="/collections/$handle" params={{ handle: "mainline" }}>
+              {campaign?.cta || "Shop Now"}
+            </Link>
+          )}
         </EditorialCta>
       </div>
 
